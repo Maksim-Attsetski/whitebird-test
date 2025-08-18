@@ -1,19 +1,26 @@
-import { useNavigate } from "react-router-dom";
+import { routes } from "@/constants";
+import { useTypedSelector } from "@/hooks";
+import { Typography } from "antd";
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
-  const navigate = useNavigate();
-  // const { user } = useAuth();
+  const { user } = useTypedSelector((s) => s.users);
 
-  // console.log(user);
-  // useEffect(() => {
-  //   supabase.auth.getUser().then((r) => {
-  //     if (r.error) {
-  //       navigate(routes.auth);
-  //     }
-  //   });
-  // }, []);
-
-  return <div>HomePage</div>;
+  return (
+    <div>
+      {user ? (
+        <>
+          <Typography>{user?.email}</Typography>
+          <Typography>{JSON.stringify(user?.user_metadata)}</Typography>
+        </>
+      ) : (
+        <>
+          <Typography>Авторизуйтесь</Typography>
+          <Link to={routes.auth}>Перейти</Link>
+        </>
+      )}
+    </div>
+  );
 };
 
 export default HomePage;
