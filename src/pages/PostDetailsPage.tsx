@@ -1,17 +1,20 @@
+import { useEffect, useState } from "react";
+import { FolderFilled, FolderOutlined, HeartFilled, HeartOutlined } from "@ant-design/icons";
+import { useParams } from "react-router-dom";
+import { Button, Flex, Typography } from "antd";
+
 import {
   favoritesApi,
   likesApi,
   postsApi,
+  commentApi,
   type IComment,
   type IFavoritePost,
   type ILikedPost,
   type IPost,
 } from "@/entities/posts";
-import { commentApi } from "@/entities/posts/api/comments.api";
 import { useTypedSelector } from "@/hooks";
-import { Button, Card, List, Typography } from "antd";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { CommentList } from "@/widgets";
 
 const PostDetailsPage = () => {
   const params = useParams<{ id: string }>();
@@ -91,32 +94,27 @@ const PostDetailsPage = () => {
 
   return (
     <div className="container">
-      <Typography.Title level={4}>post details</Typography.Title>
       {isLoading ? (
         <Typography>Loading...</Typography>
       ) : (
         <>
-          <Typography>{fullPost?.id}</Typography>
-          <Typography>{fullPost?.title}</Typography>
-          <Typography>{fullPost?.description}</Typography>
-          <Typography>{JSON.stringify(fullPost, null, 8)}</Typography>
+          <Typography.Title level={3}>
+            {fullPost?.id}. {fullPost?.title}
+          </Typography.Title>
+          <Typography.Title level={5}>{fullPost?.description}</Typography.Title>
+          <Typography.Title level={5}>Приоритет: {fullPost?.priority}</Typography.Title>
 
-          <Button type={isLiked ? "primary" : "default"} onClick={onClickLike}>
-            {!!isLiked ? "liked" : "not liked"}
-          </Button>
-          <Button type={isSaved ? "primary" : "default"} onClick={onClickSave}>
-            {!!isSaved ? "saved" : "not saved"}
-          </Button>
-
-          <List
-            dataSource={comments}
-            renderItem={(item) => (
-              <Card title={item.title}>
-                <Typography>{item?.description}</Typography>
-                <Typography style={{ opacity: 0.8 }}>{item.created_at}</Typography>
-              </Card>
-            )}
-          />
+          <br />
+          <Flex align="center" gap={12}>
+            <Button type={isLiked ? "primary" : "default"} onClick={onClickLike}>
+              {isLiked ? <HeartFilled /> : <HeartOutlined />}
+            </Button>
+            <Button type={isSaved ? "primary" : "default"} onClick={onClickSave}>
+              {isSaved ? <FolderFilled /> : <FolderOutlined />}
+            </Button>
+          </Flex>
+          <br />
+          <CommentList comments={comments} postId={params.id} setComments={setComments} />
         </>
       )}
     </div>

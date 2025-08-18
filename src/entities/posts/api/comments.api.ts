@@ -19,7 +19,7 @@ class CommentApi {
   }
 
   async update(data: Partial<IComment>) {
-    const res = await supabase.from(this.url).update(data).eq("id", data?.id).single<IComment>();
+    const res = await supabase.from(this.url).update(data).eq("id", data?.id).select().single<IComment>();
     return res.data;
   }
 }
