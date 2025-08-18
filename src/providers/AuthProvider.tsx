@@ -1,8 +1,9 @@
-import { supabase } from "../constants";
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import { supabase } from "@/constants";
+import type { User } from "@supabase/supabase-js";
 
 interface AuthContextType {
-  user: any | null;
+  user: User | null;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
@@ -16,7 +17,7 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null));
