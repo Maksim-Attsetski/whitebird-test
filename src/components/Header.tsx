@@ -12,6 +12,11 @@ const Header: FC = () => {
   const links = useMemo(() => {
     const publicRoutes = [
       {
+        key: routes.home,
+        label: "Главная",
+        onClick: () => navigate(routes.home),
+      },
+      {
         key: routes.posts,
         label: "Посты",
         onClick: () => navigate(routes.posts),

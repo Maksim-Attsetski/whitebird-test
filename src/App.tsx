@@ -11,6 +11,7 @@ import { store } from "./store";
 import { Layout } from "./components";
 import GetDataProvider from "./providers/GetDataProvider";
 import PostDetailsPage from "./pages/PostDetailsPage";
+import UsersPage from "./pages/UsersPage";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path={"/auth"} element={<AuthPage />} />
           <Route path={"/about"} element={<AboutPage />} />
+          <Route path={"/users"} element={<UsersPage />} />
           <Route path={"/posts"} element={<PostsPage />} />
           <Route path={"/posts/:id"} element={<PostDetailsPage />} />
         </Route>

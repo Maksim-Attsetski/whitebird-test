@@ -2,7 +2,7 @@ import { useMemo, type Dispatch, type FC, type SetStateAction } from "react";
 import { Button, Card, List, Typography } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
-import type { IComment } from "@/entities/posts";
+import { type IComment } from "@/entities/posts";
 import { useTypedSelector } from "@/hooks";
 
 import AddCommentModal from "./AddCommentModal";
