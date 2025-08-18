@@ -1,0 +1,10 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  max-width: clamp(300px, 93vw, 1200px);
+  margin: 0 auto;
+}

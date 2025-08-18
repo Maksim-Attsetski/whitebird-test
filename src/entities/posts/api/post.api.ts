@@ -5,8 +5,13 @@ class PostsApi {
   private url: string = "posts";
 
   async get() {
-    const res = await supabase.from(this.url).select("*");
-    return res.data;
+    const res = await supabase.from("posts").select("*");
+    return res.data ?? [];
+  }
+
+  async getOne(id: IPost["id"]) {
+    const res = await supabase.from(this.url).select("*").eq("id", id).single();
+    return res.data ?? null;
   }
 
   async create(data: Partial<IPost>) {

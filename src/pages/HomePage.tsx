@@ -1,17 +1,28 @@
-import { routes } from "@/constants";
+import { routes, supabase } from "@/constants";
 import { useTypedSelector } from "@/hooks";
-import { Typography } from "antd";
-import { Link } from "react-router-dom";
+import { Button, Typography } from "antd";
+import { Link, useNavigate } from "react-router-dom";
 
 const HomePage = () => {
+  const navigate = useNavigate();
   const { user } = useTypedSelector((s) => s.users);
 
+  const onClickLogout = async () => {
+    await supabase.auth.signOut();
+    navigate(routes.auth);
+  };
+
   return (
-    <div>
+    <div className="container">
       {user ? (
         <>
-          <Typography>{user?.email}</Typography>
-          <Typography>{JSON.stringify(user?.user_metadata)}</Typography>
+          <Typography.Title level={2}>Добро пожаловать</Typography.Title>
+          <Typography.Title level={5}>{user?.email}</Typography.Title>
+          <br />
+
+          <Button danger onClick={onClickLogout}>
+            Logout
+          </Button>
         </>
       ) : (
         <>

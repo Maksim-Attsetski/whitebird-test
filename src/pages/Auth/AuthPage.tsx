@@ -1,18 +1,15 @@
-import { Button, Flex, Form, Input, Typography } from "antd";
-import styles from "./AuthPage.module.css";
 import { useState } from "react";
+import { Button, Flex, Form, Input, Typography } from "antd";
+
 import { supabase } from "@/constants";
 import { useTypedDispatch } from "@/hooks";
-import { setUser } from "@/entities/users";
+import { rolesApi, setUser } from "@/entities/users";
 
-interface AuthResponse {
-  msg: string;
-  error: string | null;
-}
+import styles from "./AuthPage.module.css";
 
 const AuthPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("test@mail.com");
+  const [password, setPassword] = useState("test12345");
   const [errorMsg, setErrorMsg] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
@@ -46,6 +43,7 @@ const AuthPage = () => {
         email,
         password,
       });
+      const role = await rolesApi.get(res?.data?.user?.id ?? "");
       dispatch(setUser(res?.data?.user));
     } catch (error: any) {
       setErrorMsg(error?.message);
@@ -66,6 +64,7 @@ const AuthPage = () => {
         email,
         password,
       });
+      const role = await rolesApi.get(res?.data?.user?.id ?? "");
       dispatch(setUser(res?.data?.user));
     } catch (error: any) {
       setErrorMsg(error?.message);
