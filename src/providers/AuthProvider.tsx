@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-import { supabase } from "@/constants";
+import { createContext, useContext, useState, useEffect } from "react";
+import { routes, supabase } from "@/constants";
 import type { User } from "@supabase/supabase-js";
+import { Outlet, useNavigate } from "react-router-dom";
 
 interface AuthContextType {
   user: User | null;
@@ -16,13 +17,20 @@ export const useAuth = () => {
   return ctx;
 };
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider = () => {
   const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setUser(data.session?.user ?? null));
 
     const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        navigate(routes.home);
+      } else {
+        navigate(routes.auth);
+      }
+
       setUser(session?.user ?? null);
     });
 
@@ -39,5 +47,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
   };
 
-  return <AuthContext.Provider value={{ user, signIn, signOut }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, signIn, signOut }}>
+      <Outlet />
+    </AuthContext.Provider>
+  );
 };
