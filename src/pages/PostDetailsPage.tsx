@@ -44,8 +44,10 @@ const PostDetailsPage = () => {
       const commentsRes = await commentApi.getByPostId(Number(params.id));
       setComments(commentsRes);
 
+      // можно получить несколько , посчитать кол-во лайков
       const res = await likesApi.getOne(user?.id, Number(params.id));
       setIsLiked(res);
+      // можно получить несколько , посчитать кол-во сохранёнок
       const favoritesRes = await favoritesApi.getOne(user?.id, Number(params.id));
       setIsSaved(favoritesRes);
     } catch (error) {

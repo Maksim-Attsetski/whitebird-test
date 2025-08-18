@@ -1,8 +1,8 @@
 import { useMemo, type Dispatch, type FC, type SetStateAction } from "react";
-import { Button, Card, List, Typography } from "antd";
+import { Button, Card, List, notification, Typography } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
-import { type IComment } from "@/entities/posts";
+import { commentApi, type IComment } from "@/entities/posts";
 import { useTypedSelector } from "@/hooks";
 
 import AddCommentModal from "./AddCommentModal";
@@ -14,15 +14,21 @@ interface IProps {
 }
 
 const CommentList: FC<IProps> = ({ comments, setComments, postId }) => {
+  const [notify, notifyContext] = notification.useNotification();
+
   const { role, user } = useTypedSelector((s) => s.users);
   const onCreateComment = async (comment: IComment) => {
     setComments((prev) => [comment, ...prev]);
+    notify.success({ message: "Успешно создано" });
   };
   const onUpdateComment = async (comment: IComment) => {
     setComments((prev) => prev.map((c) => (c.id === comment.id ? comment : c)));
+    notify.success({ message: "Успешно обновлено" });
   };
   const onDeleteComment = async (id: IComment["id"]) => {
+    await commentApi.delete(id);
     setComments((prev) => prev.filter((c) => c.id !== id));
+    notify.success({ message: "Успешно удалено" });
   };
 
   const myCommentsLength = useMemo(
@@ -30,12 +36,19 @@ const CommentList: FC<IProps> = ({ comments, setComments, postId }) => {
     [user?.id, comments]
   );
 
+  const sortedComments = useMemo(
+    () => [...comments].sort((a, b) => Number(b.creator_id === user?.id) - Number(a.creator_id === user?.id)),
+    [comments, user?.id]
+  );
+
   return (
     <>
+      {notifyContext}
       {myCommentsLength === 0 && <AddCommentModal onCreate={onCreateComment} postId={Number(postId)} />}
 
       <List
-        dataSource={comments}
+        dataSource={sortedComments}
+        header={<Typography.Title level={4}>Комменты ({comments.length})</Typography.Title>}
         renderItem={(item) => (
           <Card
             actions={
