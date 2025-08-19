@@ -1,15 +1,24 @@
 import { useTypedDispatch, useTypedSelector } from "@/hooks";
 import type { IPost } from "../types";
-import { postsApi } from "../api/post.api";
+import { postsApi, type IPostFilters } from "../api/post.api";
 import { setPosts } from "../slice";
+import { useState } from "react";
 
 export const usePosts = () => {
   const { posts } = useTypedSelector((s) => s.posts);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useTypedDispatch();
 
-  const getPosts = async () => {
-    const res = await postsApi.get();
-    res && dispatch(setPosts(res));
+  const getPosts = async (filters: IPostFilters) => {
+    try {
+      setIsLoading(true);
+      const res = await postsApi.getWithFilters(filters);
+      res && dispatch(setPosts(res));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const addPost = async (data: IPost) => {
@@ -27,5 +36,5 @@ export const usePosts = () => {
     dispatch(setPosts(posts.filter((p) => p.id !== id)));
   };
 
-  return { getPosts, addPost, updatePost, deletePost, posts };
+  return { isLoading, getPosts, addPost, updatePost, deletePost, posts };
 };
