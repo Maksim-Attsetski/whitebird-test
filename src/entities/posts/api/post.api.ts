@@ -15,7 +15,7 @@ class PostsApi {
   }
 
   async create(data: Partial<IPost>) {
-    const res = await supabase.from(this.url).insert(data).single<IPost>();
+    const res = await supabase.from(this.url).upsert(data).select().single<IPost>();
     return res.data;
   }
 
@@ -24,7 +24,7 @@ class PostsApi {
   }
 
   async update(data: Partial<IPost>) {
-    const res = await supabase.from(this.url).update(data).eq("id", data?.id).single<IPost>();
+    const res = await supabase.from(this.url).update(data).eq("id", data?.id).select().single<IPost>();
     return res.data;
   }
 }

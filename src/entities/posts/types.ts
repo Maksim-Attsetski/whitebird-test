@@ -6,6 +6,12 @@ export enum EPostPriority {
   HIGH = "HIGH",
 }
 
+export const priorityList: Record<EPostPriority, string> = {
+  [EPostPriority.HIGH]: "Высокий",
+  [EPostPriority.NORMAL]: "Средний",
+  [EPostPriority.LOW]: "Низкий",
+};
+
 export interface IPost<C = string> {
   id: number;
   created_at: string;

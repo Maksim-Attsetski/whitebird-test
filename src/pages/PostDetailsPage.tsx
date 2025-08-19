@@ -11,16 +11,9 @@ import {
   type IFavoritePost,
   type ILikedPost,
   type IPost,
-  EPostPriority,
 } from "@/entities/posts";
 import { useTypedSelector } from "@/hooks";
-import { CommentList, PostActions } from "@/widgets";
-
-const priorityList: Record<EPostPriority, string> = {
-  [EPostPriority.HIGH]: "Высокий",
-  [EPostPriority.NORMAL]: "Средний",
-  [EPostPriority.LOW]: "Низкий",
-};
+import { CommentList, PostActions, PostDetails } from "@/widgets";
 
 const PostDetailsPage = () => {
   const params = useParams<{ id: string }>();
@@ -66,13 +59,7 @@ const PostDetailsPage = () => {
         <Typography>Loading...</Typography>
       ) : (
         <>
-          <Typography.Title level={3}>
-            {fullPost?.id}. {fullPost?.title}
-          </Typography.Title>
-          <Typography.Title level={5}>{fullPost?.description}</Typography.Title>
-          <Typography.Title level={5}>
-            Приоритет: {fullPost?.priority ? priorityList[fullPost?.priority] : priorityList.NORMAL}
-          </Typography.Title>
+          <PostDetails setPost={setFullPost} post={fullPost} />
 
           <br />
           {/* можно было бы и в компонент перенести все, но так можно управлять состоянием выше, если понадобится */}

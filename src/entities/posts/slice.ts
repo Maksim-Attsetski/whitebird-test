@@ -19,6 +19,11 @@ export const postSlice = createSlice({
     setPosts: (state: IState, action: PayloadAction<IPost[]>) => {
       state.posts = action.payload;
     },
+    deletePost: (state: IState, action: PayloadAction<IPost["id"]>) => {
+      state.posts = state.posts.filter((id) => id.id !== action.payload);
+      state.likedPosts = state.likedPosts.filter((id) => id.id !== action.payload);
+      state.favoritesPosts = state.favoritesPosts.filter((id) => id.id !== action.payload);
+    },
     setLikes: (state: IState, action: PayloadAction<ILikedPost[]>) => {
       state.likedPosts = action.payload;
     },
@@ -28,4 +33,4 @@ export const postSlice = createSlice({
   },
 });
 
-export const { setFavorites, setLikes, setPosts } = postSlice.actions;
+export const { setFavorites, setLikes, setPosts, deletePost } = postSlice.actions;
