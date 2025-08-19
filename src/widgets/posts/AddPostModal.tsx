@@ -48,7 +48,7 @@ const AddPostModal: FC<IProps> = ({ onCreate, defaultValue, button }) => {
           creator_id: user?.id,
           title,
           description,
-          priority: EPostPriority.NORMAL,
+          priority,
         });
         res && (await onCreate(res));
       }
