@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Button, Flex, Form, Input, Typography } from "antd";
 
-import { supabase } from "@/constants";
+import { routes, supabase } from "@/constants";
 import { useTypedDispatch } from "@/hooks";
-import { rolesApi, setUser } from "@/entities/users";
+import { rolesApi, setRole, setUser } from "@/entities/users";
 
 import styles from "./AuthPage.module.css";
+import { useNavigate } from "react-router-dom";
+import type { AuthResponse } from "@supabase/supabase-js";
 
 const AuthPage = () => {
   const [email, setEmail] = useState("test@mail.com");
@@ -14,7 +16,15 @@ const AuthPage = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const navigate = useNavigate();
   const dispatch = useTypedDispatch();
+
+  const setUserData = async (res: AuthResponse) => {
+    const role = await rolesApi.get(res?.data?.user?.id ?? "");
+    dispatch(setUser(res?.data?.user));
+    dispatch(setRole(role));
+    navigate(routes.home);
+  };
 
   const validateAndSendAuth = (): string | null => {
     // Простая валидация email
@@ -43,8 +53,7 @@ const AuthPage = () => {
         email,
         password,
       });
-      const role = await rolesApi.get(res?.data?.user?.id ?? "");
-      dispatch(setUser(res?.data?.user));
+      await setUserData(res);
     } catch (error: any) {
       setErrorMsg(error?.message);
     } finally {
@@ -64,8 +73,7 @@ const AuthPage = () => {
         email,
         password,
       });
-      const role = await rolesApi.get(res?.data?.user?.id ?? "");
-      dispatch(setUser(res?.data?.user));
+      await setUserData(res);
     } catch (error: any) {
       setErrorMsg(error?.message);
     } finally {

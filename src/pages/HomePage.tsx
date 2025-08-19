@@ -1,14 +1,19 @@
 import { routes, supabase } from "@/constants";
-import { useTypedSelector } from "@/hooks";
+import { setRole, setUser } from "@/entities/users";
+import { useTypedDispatch, useTypedSelector } from "@/hooks";
 import { Button, Typography } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const navigate = useNavigate();
   const { user, role } = useTypedSelector((s) => s.users);
+  const dispatch = useTypedDispatch();
 
+  // убрать в хук, если еще где-то пригодится
   const onClickLogout = async () => {
     await supabase.auth.signOut();
+    dispatch(setUser(null));
+    dispatch(setRole(null));
     navigate(routes.auth);
   };
 
