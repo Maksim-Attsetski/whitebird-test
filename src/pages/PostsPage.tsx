@@ -1,14 +1,12 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, Flex, Input, List, Select, Typography } from "antd";
-
-import { usePosts } from "@/entities/posts/hooks";
-import { useEffect, useState } from "react";
-import { routes } from "@/constants";
-import AddPostModal from "@/widgets/posts/AddPostModal";
-import { useTypedDispatch } from "@/hooks";
-import { EPostPriority, type IPost, type IPostFilters } from "@/entities/posts";
-import { setPosts } from "@/entities/posts/slice";
 import { CaretDownFilled, CaretUpFilled } from "@ant-design/icons";
+
+import { usePosts, setPosts, EPostPriority, type IPost, type IPostFilters } from "@/entities/posts";
+import { routes } from "@/constants";
+import { AddPostModal } from "@/widgets";
+import { useDebounce, useTypedDispatch } from "@/hooks";
 
 const filterOptions = [
   {
@@ -42,11 +40,16 @@ const PostsPage = () => {
 
   const [sortBy, setSortBy] = useState<string>(filterOptions.at(1)?.value || "");
   const [search, setSearch] = useState<string>("");
+  const debouncedSearch = useDebounce(search);
 
   useEffect(() => {
     const [sortValue, sortMethod] = sortBy.split(",");
-    getPosts({ search, sortBy: sortValue as keyof IPost, sortMethod: sortMethod as IPostFilters["sortMethod"] });
-  }, [search, sortBy]);
+    getPosts({
+      search: debouncedSearch,
+      sortBy: sortValue as keyof IPost,
+      sortMethod: sortMethod as IPostFilters["sortMethod"],
+    });
+  }, [debouncedSearch, sortBy]);
 
   const onCreatePost = async (newPost: IPost) => {
     dispatch(setPosts([...posts, newPost]));
