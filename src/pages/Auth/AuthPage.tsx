@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { Button, Flex, Form, Input, Typography } from "antd";
+import type { AuthResponse } from "@supabase/supabase-js";
+import { useNavigate } from "react-router-dom";
 
 import { routes, supabase } from "@/constants";
 import { useTypedDispatch } from "@/hooks";
 import { rolesApi, setRole, setUser } from "@/entities/users";
 
 import styles from "./AuthPage.module.css";
-import { useNavigate } from "react-router-dom";
-import type { AuthResponse } from "@supabase/supabase-js";
 
 const AuthPage = () => {
-  const [email, setEmail] = useState("test@mail.com");
-  const [password, setPassword] = useState("test12345");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
