@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { FolderFilled, FolderOutlined, HeartFilled, HeartOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
-import { Button, Flex, Typography } from "antd";
+import { Typography } from "antd";
 
 import {
   favoritesApi,
@@ -15,7 +14,7 @@ import {
   EPostPriority,
 } from "@/entities/posts";
 import { useTypedSelector } from "@/hooks";
-import { CommentList } from "@/widgets";
+import { CommentList, PostActions } from "@/widgets";
 
 const priorityList: Record<EPostPriority, string> = {
   [EPostPriority.HIGH]: "Высокий",
@@ -61,46 +60,6 @@ const PostDetailsPage = () => {
     getPostData();
   }, [params?.id, user?.id]);
 
-  const onClickLike = async () => {
-    try {
-      setIsLoading(true);
-      if (!!isLiked) {
-        await likesApi.delete(isLiked?.id);
-        setIsLiked(null);
-      } else {
-        const res = await likesApi.create({
-          post_id: Number(params.id),
-          user_id: user?.id,
-        });
-        setIsLiked(res);
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const onClickSave = async () => {
-    try {
-      setIsLoading(true);
-      if (isSaved) {
-        await favoritesApi.delete(isSaved?.id);
-        setIsSaved(null);
-      } else {
-        const res = await favoritesApi.create({
-          post_id: Number(params.id),
-          user_id: user?.id,
-        });
-        setIsSaved(res);
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="container">
       {isLoading ? (
@@ -116,14 +75,15 @@ const PostDetailsPage = () => {
           </Typography.Title>
 
           <br />
-          <Flex align="center" gap={12}>
-            <Button type={isLiked ? "primary" : "default"} onClick={onClickLike}>
-              {isLiked ? <HeartFilled /> : <HeartOutlined />}
-            </Button>
-            <Button type={isSaved ? "primary" : "default"} onClick={onClickSave}>
-              {isSaved ? <FolderFilled /> : <FolderOutlined />}
-            </Button>
-          </Flex>
+          {/* можно было бы и в компонент перенести все, но так можно управлять состоянием выше, если понадобится */}
+          <PostActions
+            isLiked={isLiked}
+            isSaved={isSaved}
+            postId={params.id}
+            setIsLiked={setIsLiked}
+            setIsLoading={setIsLoading}
+            setIsSaved={setIsSaved}
+          />
           <br />
           <CommentList comments={comments} postId={params.id} setComments={setComments} />
         </>

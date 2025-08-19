@@ -1,4 +1,5 @@
 import AddCommentModal from "./posts/AddCommentModal";
 import CommentList from "./posts/CommentList";
+import PostActions from "./posts/PostActions";
 
-export { CommentList, AddCommentModal };
+export { PostActions, CommentList, AddCommentModal };
